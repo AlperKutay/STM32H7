@@ -40,6 +40,11 @@ void LED_Initialize(void);
 void LED_On(void);
 void button_init(void);
 uint32_t button_status(void);
+void TIM2_IRQHandler(void);
+void TIM2_init(void);
+int value=0;
+void Delay_us(uint16_t us);
+void Delay_ms(uint16_t ms);
 static osThreadId_t tid_thrLED;         // Thread id of thread: LED
 static osThreadId_t tid_thrBUT;         // Thread id of thread: BUT
 
@@ -51,14 +56,16 @@ __NO_RETURN void thrLED (void *argument) {
 	 uint32_t state;
 	while(1)
 	{	
-		state = (button_status () & 1U); 
+		//Led_swift();
+		/*state = (button_status () & 1U); 
 		if(state)
 		{
 			LED_Off();
 			osDelay(500U);
 		}
 		else
-			LED_On();
+			LED_Off();*/
+			 
 	}
   /*for (;;) {
     if (osThreadFlagsWait (1U, osFlagsWaitAny, 0U) == 1U) {
@@ -81,11 +88,12 @@ __NO_RETURN void thrLED (void *argument) {
 /*------------------------------------------------------------------------------
  * Application main thread
  *----------------------------------------------------------------------------*/
+
 void app_main (void *argument)
 {
 
   LED_Initialize ();                    // Initialize LEDs
-	button_init();
+	TIM2_init();
 
   tid_thrLED = osThreadNew (thrLED, NULL, NULL);  // Create LED thread
   if (tid_thrLED == NULL) { /* add error handling */ }
@@ -121,16 +129,16 @@ void Led_swift(void)
 {
 	GPIOD->BSRR |= 1<<31;
 	GPIOD->BSRR |= 1<<12;
-	osDelay (500U);
+	Delay_ms (1000U);
 	GPIOD->BSRR |= 1<<28;
 	GPIOD->BSRR |= 1<<13;
-	osDelay (500U);
+	Delay_ms (1000U);
 	GPIOD->BSRR |= 1<<29;
 	GPIOD->BSRR |= 1<<14;
-	osDelay (500U);
+	Delay_ms (1000U);
 	GPIOD->BSRR |= 1<<30;
 	GPIOD->BSRR |= 1<<15;
-	osDelay (500U);
+	Delay_ms (1000U);
 }
 void button_init(void)
 {
@@ -141,3 +149,53 @@ uint32_t button_status(void)
 {
 		return GPIOA->IDR;
 }
+void TIM2_init(void)
+{
+	RCC->APB1RSTR 	|= RCC_APB1RSTR_TIM2RST;
+	RCC->APB1RSTR 	&= ~RCC_APB1RSTR_TIM2RST;
+	RCC->APB1ENR |= RCC_APB1ENR_TIM2EN;
+	
+	__NOP();
+	__NOP();
+	__NOP();
+	TIM2->CR1 &= ~TIM_CR1_CEN ; 
+	//TIM2->CR1 |= TIM_CR1_ARPE; //This makes board does not work
+	TIM2->CR1 &= (~TIM_CR1_DIR);
+	TIM2->CR1 &= (~TIM_CR1_OPM);
+	TIM2->CR1 |= TIM_CR1_URS;
+	TIM2->PSC =168-1; //168MHz/168 = 1Mhz --- 1us
+	TIM2->ARR = 10000; //1M cycles ---> 1sn
+	TIM2->DIER |= TIM_DIER_UIE ; 
+	TIM2->CR1  |=TIM_CR1_CEN;
+	NVIC_EnableIRQ(TIM2_IRQn);
+}
+void Delay_us(uint16_t us)
+{
+	TIM2->CNT = 0;
+	while(TIM2->CNT< us);
+}
+void Delay_ms(uint16_t ms)
+{
+	for(uint16_t i=0;i<ms;i++)
+	{
+		Delay_us(1000);
+	}
+}
+void TIM2_IRQHandler(void)
+{
+	if(value==0)
+	{
+		value=1;
+		LED_On();
+		TIM2->CNT = 0;
+		TIM2->SR &= ~TIM_SR_UIF;
+	}
+	else if(value==1)
+	{
+		value=0;
+		LED_Off();
+		TIM2->CNT = 0;
+		TIM2->SR &= ~TIM_SR_UIF;
+	}
+		
+}	

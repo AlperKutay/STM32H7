@@ -22,12 +22,69 @@ Dialog DLL:      TCM.DLL V1.53.0.0
  
 <h2>Project:</h2>
 C:\Users\alper\Desktop\Job\ArdicLabs\MDK\Boards\ST\STM32F4-Discovery\Blinky_alper\Blinky_Alper.uvprojx
-Project File Date:  12/12/2022
+Project File Date:  12/19/2022
 
 <h2>Output:</h2>
 *** Using Compiler 'V6.16', folder: 'C:\Keil_v5\ARM\ARMCLANG\Bin'
 Build target 'Target 1'
-".\Objects\Blinky_Alper.axf" - 0 Error(s), 0 Warning(s).
+blinky.c(45): warning: no previous extern declaration for non-static variable 'value' [-Wmissing-variable-declarations]
+int value=0;
+    ^
+blinky.c(45): note: declare 'static' if the variable is not intended to be used outside of this translation unit
+int value=0;
+^
+blinky.c(56): warning: unused variable 'state' [-Wunused-variable]
+         uint32_t state;
+                  ^
+blinky.c(55): warning: unused variable 'active_flag' [-Wunused-variable]
+  uint32_t active_flag = 1U;
+           ^
+blinky.c(54): warning: unused parameter 'argument' [-Wunused-parameter]
+__NO_RETURN void thrLED (void *argument) {
+                               ^
+blinky.c(54): warning: no previous prototype for function 'thrLED' [-Wmissing-prototypes]
+__NO_RETURN void thrLED (void *argument) {
+                 ^
+blinky.c(54): note: declare 'static' if the function is not intended to be used outside of this translation unit
+__NO_RETURN void thrLED (void *argument) {
+            ^
+            static 
+blinky.c(92): warning: unused parameter 'argument' [-Wunused-parameter]
+void app_main (void *argument)
+                     ^
+blinky.c(92): warning: no previous prototype for function 'app_main' [-Wmissing-prototypes]
+void app_main (void *argument)
+     ^
+blinky.c(92): note: declare 'static' if the function is not intended to be used outside of this translation unit
+void app_main (void *argument)
+^
+static 
+blinky.c(93): warning: function 'app_main' could be declared with attribute 'noreturn' [-Wmissing-noreturn]
+{
+^
+blinky.c(126): warning: signed shift result (0x80000000) sets the sign bit of the shift expression's type ('int') and becomes negative [-Wshift-sign-overflow]
+        GPIOD->BSRR |= 1<<31;
+                       ~^ ~~
+blinky.c(126): warning: implicit conversion changes signedness: 'int' to 'unsigned int' [-Wsign-conversion]
+        GPIOD->BSRR |= 1<<31;
+                    ~~ ~^~~~
+blinky.c(130): warning: signed shift result (0x80000000) sets the sign bit of the shift expression's type ('int') and becomes negative [-Wshift-sign-overflow]
+        GPIOD->BSRR |= 1<<31;
+                       ~^ ~~
+blinky.c(130): warning: implicit conversion changes signedness: 'int' to 'unsigned int' [-Wsign-conversion]
+        GPIOD->BSRR |= 1<<31;
+                    ~~ ~^~~~
+blinky.c(202): warning: no newline at end of file [-Wnewline-eof]
+}       
+        ^
+blinky.c(49): warning: unused variable 'tid_thrBUT' [-Wunused-variable]
+static osThreadId_t tid_thrBUT;         // Thread id of thread: BUT
+                    ^
+14 warnings generated.
+compiling blinky.c...
+linking...
+Program Size: Code=9076 RO-data=428 RW-data=8 ZI-data=12800  
+".\Objects\Blinky_Alper.axf" - 0 Error(s), 14 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -74,12 +131,12 @@ Package Vendor: Keil
       Include file:  CMSIS\RTOS2\FreeRTOS\Config\ARMCM\FreeRTOSConfig.h
 
    * Component: ARM.FreeRTOS::RTOS:Core:Cortex-M:10.5.1
-      Include file:  Source\include\task.h
-      Source file:   Source\tasks.c
-      Include file:  Source\include\queue.h
-      Source file:   Source\list.c
-      Source file:   Source\queue.c
       Include file:  Source\include\semphr.h
+      Source file:   Source\list.c
+      Source file:   Source\tasks.c
+      Include file:  Source\include\task.h
+      Include file:  Source\include\queue.h
+      Source file:   Source\queue.c
       Include file:  Source\include\FreeRTOS.h
       Source file:   Source\portable\GCC\ARM_CM4F\port.c
       Source file:   CMSIS\RTOS2\FreeRTOS\Source\freertos_evr.c
@@ -98,18 +155,18 @@ Package Vendor: Keil
    * Component: ARM::CMSIS:CORE:5.6.0
 
    * Component: ARM::CMSIS:RTOS2:FreeRTOS:Cortex-M:10.5.1
-      Source file:   CMSIS\RTOS2\FreeRTOS\Source\cmsis_os2.c
-      Source file:   CMSIS\RTOS2\FreeRTOS\Source\os_systick.c
       Include file:  CMSIS\RTOS2\FreeRTOS\Include\freertos_mpool.h
+      Source file:   CMSIS\RTOS2\FreeRTOS\Source\cmsis_os2.c
       Source file:   CMSIS\RTOS2\FreeRTOS\Source\ARM\clib_arm.c
+      Source file:   CMSIS\RTOS2\FreeRTOS\Source\os_systick.c
 
    * Component: Keil::Device:Startup:2.6.3
-      Source file:   Drivers\CMSIS\Device\ST\STM32F4xx\Source\Templates\system_stm32f4xx.c
       Source file:   MDK\Device\Source\ARM\STM32F40xxx_41xxx_OPT.s
-      Source file:   MDK\Device\Source\ARM\STM32F4xx_OTP.s
       Include file:  Drivers\CMSIS\Device\ST\STM32F4xx\Include\stm32f4xx.h
+      Source file:   MDK\Device\Source\ARM\STM32F4xx_OTP.s
       Source file:   Drivers\CMSIS\Device\ST\STM32F4xx\Source\Templates\arm\startup_stm32f407xx.s
-Build Time Elapsed:  00:00:00
+      Source file:   Drivers\CMSIS\Device\ST\STM32F4xx\Source\Templates\system_stm32f4xx.c
+Build Time Elapsed:  00:00:01
 </pre>
 </body>
 </html>
